@@ -24,7 +24,6 @@ import { PlaceholdersAndVanishInput } from '@/components/ui/placeholders-and-van
 import { TypewriterEffectSmooth } from '@/components/ui/typewriter-effect';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
 import TooltipWithTrigger from '@/reuablecomponents/TooltipWithTrigger';
 
 // const socket = io('http://localhost:4000');
