@@ -25,6 +25,7 @@ import { TypewriterEffectSmooth } from '@/components/ui/typewriter-effect';
 import { TextGenerateEffect } from '@/components/ui/text-generate-effect';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
+import TooltipWithTrigger from '@/reuablecomponents/TooltipWithTrigger';
 
 // const socket = io('http://localhost:4000');
 // const socket = io('https://chartapp-expressjs-backend.onrender.com')
@@ -287,6 +288,9 @@ const Home = () => {
                 console.log("🚀 ~ handleFriendRequest ~ message:", result.data.message);
                 setFriendRequestOpen(false);
                 setFriendRequestMessage(result.data.message);
+                setTimeout(() => {
+                    setFriendRequestMessage('');
+                }, 4000);
             } else {
                 console.log("No message received from the response");
             }
@@ -308,9 +312,12 @@ const Home = () => {
                 </div>
 
                 {friendRequestMessage && (
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 w-full max-w-md dark:bg-black dark:text-white bg-white text-black">
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 w-full max-w-md dark:bg-black dark:text-white bg-white text-black z-50">
                         <Alert variant="destructive">
-                            <Terminal className="h-4 w-4" />
+                            {/* <Terminal className="h-4 w-4" /> */}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-info-lg" viewBox="0 0 16 16">
+                                <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0" />
+                            </svg>
                             <AlertTitle>Heads up!</AlertTitle>
                             <AlertDescription>{friendRequestMessage}</AlertDescription>
                         </Alert>
@@ -394,14 +401,21 @@ const Home = () => {
                             </ModalBody>
                         </Modal>
                     </div>
-                    <button className='bg-none border-none' onClick={() => setAccountView(true)}>
-                        <img
-                            width={100}
-                            height={100}
-                            src={'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}
-                            className="h-12 w-12 rounded-lg object-cover object-top"
-                        />
-                    </button>
+                    <TooltipWithTrigger
+                        trigger={
+                            <button className='bg-none border-none' onClick={() => setAccountView(true)}>
+                                <img
+                                    width={100}
+                                    height={100}
+                                    src={'https://cdn-icons-png.flaticon.com/512/3177/3177440.png'}
+                                    className="h-12 w-12 rounded-lg object-cover object-top"
+                                />
+                            </button>
+                        }
+                        content={`Profile`}
+                    />
+
+
                 </div>
             </div>
 
@@ -413,24 +427,6 @@ const Home = () => {
                         <div className=" w-full relative max-w-xs">
                             <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-blue-500 to-teal-500 transform scale-[0.80] bg-red-500 rounded-full blur-3xl" />
                             <div className="relative shadow-xl bg-gray-900 border border-gray-800  px-4 py-8 h-full overflow-hidden rounded-2xl flex flex-col justify-end items-start">
-                                <div className="h-5 w-5 rounded-full border flex items-center justify-center mb-4 border-gray-500">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="h-2 w-2 text-gray-300"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25"
-                                        />
-                                    </svg>
-                                </div>
-
-
                                 <div className='flex justify-center w-full'>
                                     <img
                                         width={100}
@@ -452,14 +448,21 @@ const Home = () => {
 
 
                                 <div className='w-full flex flex-wrap justify-center gap-2'>
-                                    {/* <button className="border px-4 py-1 rounded-lg  border-gray-500 text-gray-300" onClick={() => setAccountView(false)}>
-                                        Close
-                                    </button> */}
-                                    <Button variant="outline" onClick={() => setAccountView(false)} className='text-black dark:text-white'>
-                                        Close
-                                    </Button>
+                                    <TooltipWithTrigger
+                                        trigger={
+                                            <Button variant="outline" onClick={() => setAccountView(false)} className='text-black dark:text-white'>
+                                                Close
+                                            </Button>
+                                        }
+                                        content={`Click to close profile`}
+                                    />
+                                    <TooltipWithTrigger
+                                        trigger={
+                                            <Button variant="destructive" onClick={handlelogout}>Log out</Button>
 
-                                    <Button variant="destructive" onClick={handlelogout}>Log out</Button>
+                                        }
+                                        content={`Click to Log out`}
+                                    />
                                 </div>
 
                                 <Meteors number={20} />
@@ -472,7 +475,7 @@ const Home = () => {
             <AlertDialog open={friendRequestOpen} onOpenChange={setFriendRequestOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>You have a friend request!!</AlertDialogTitle>
+                        <AlertDialogTitle><p className='text-black dark:text-white'>You have a friend request!!</p></AlertDialogTitle>
                         <AlertDialogDescription>
 
                             Request sent from {pendingRequsts?.pendingRequests?.[0]?.friendId?.firstName || ''} {pendingRequsts?.pendingRequests?.[0]?.friendId?.lastName || ''}
@@ -480,10 +483,19 @@ const Home = () => {
 
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <Button variant="destructive" onClick={() => handleFriendRequest(pendingRequsts?.pendingRequests?.[0]?.friendId?._id, 'reject')}>Reject</Button>
-                        <Button onClick={() => handleFriendRequest(pendingRequsts?.pendingRequests?.[0]?.friendId?._id, 'accept')}>Accept</Button>
-                        {/* <AlertDialogCancel onClick={() => setIsSuccessDialogOpen(false)}>Close</AlertDialogCancel> */}
+                    <AlertDialogFooter className='gap-2'>
+                        <TooltipWithTrigger
+                            trigger={
+                                <Button variant="destructive" onClick={() => handleFriendRequest(pendingRequsts?.pendingRequests?.[0]?.friendId?._id, 'reject')}>Reject</Button>
+                            }
+                            content={`Click to Reject the friend request.`}
+                        />
+                        <TooltipWithTrigger
+                            trigger={
+                                <Button onClick={() => handleFriendRequest(pendingRequsts?.pendingRequests?.[0]?.friendId?._id, 'accept')}>Accept</Button>
+                            }
+                            content={`Click to accept the friend request and start chatting.`}
+                        />
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

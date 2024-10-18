@@ -22,6 +22,7 @@ import { Spotlight } from "@/components/ui/Spotlight";
 import { baseURL } from "@/api/axiosClient";
 import { Label } from "@/components/ui/labelAUI";
 import { Input } from "@/components/ui/inputAUI";
+import Loader from "@/reuablecomponents/Loader";
 
 const SignUpPage: React.FC = () => {
     const [name, setName] = useState('');
@@ -37,7 +38,7 @@ const SignUpPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
-    
+
 
     const navigate = useNavigate();
 
@@ -72,6 +73,10 @@ const SignUpPage: React.FC = () => {
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
+            // setTimeout(() => {
+            // setError(null);
+                
+            // }, 3000);
             return;
         }
 
@@ -102,7 +107,7 @@ const SignUpPage: React.FC = () => {
             }
 
             const data = await response.json();
-            alert(data.msg);
+            console.log("🚀 ~ handleSignUp ~ (data.msg):", (data.msg))
             setIsSuccessDialogOpen(true);
             // navigate('/login');
         } catch (err: any) {
@@ -110,6 +115,7 @@ const SignUpPage: React.FC = () => {
         } finally {
             setIsSubmitting(false);
         }
+
     };
 
     // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -128,7 +134,7 @@ const SignUpPage: React.FC = () => {
                     fill="white"
                 />
                 {error && (
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 w-full max-w-md bg-white">
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 w-full max-w-md ">
                         <Alert variant="destructive">
                             <Terminal className="h-4 w-4" />
                             <AlertTitle>Heads up!</AlertTitle>
@@ -222,13 +228,13 @@ const SignUpPage: React.FC = () => {
                             </div>
                             <Button
                                 // onClick={handleSignUp}
-                                disabled={isSubmitting}
+                                // disabled={isSubmitting}
                             >
                                 {isSubmitting ? 'Signing Up...' : 'Sign Up'}
                             </Button>
                         </CardContent>
                         <CardFooter className='flex justify-center'>
-                            <p className='text-xs '>Have an account? <Link to='/login' className="text-blue-400">Log in</Link></p>
+                            <p className='text-2xl'>Have an account? <Link to='/login' className="text-blue-400">Log in</Link></p>
                         </CardFooter>
                     </Card>
                 </div>
@@ -248,7 +254,7 @@ const SignUpPage: React.FC = () => {
                                 <Label htmlFor="firstname">First name</Label>
                                 <Input
                                     id="firstname"
-                                    placeholder="Tyler"
+                                    placeholder="XXXX"
                                     type="text"
                                     value={firstname}
                                     onChange={(e) => setfirstName(e.target.value)} />
@@ -257,7 +263,7 @@ const SignUpPage: React.FC = () => {
                                 <Label htmlFor="lastname">Second name</Label>
                                 <Input
                                     id="secondname"
-                                    placeholder="Durden"
+                                    placeholder="XXXX"
                                     type="text"
                                     value={secondname}
                                     onChange={(e) => setSecondName(e.target.value)} />
@@ -267,7 +273,7 @@ const SignUpPage: React.FC = () => {
                             <Label htmlFor="email">Last name</Label>
                             <Input
                                 id="lastname"
-                                placeholder="Yakkaladevara"
+                                placeholder="XXXX"
                                 type="text"
                                 value={lastname}
                                 onChange={(e) => setLastName(e.target.value)} />
@@ -276,7 +282,7 @@ const SignUpPage: React.FC = () => {
                             <Label htmlFor="email">Email Address</Label>
                             <Input
                                 id="email"
-                                placeholder="projectmayhem@fc.com"
+                                placeholder="XXXXX@gmail.com"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)} />
@@ -288,10 +294,11 @@ const SignUpPage: React.FC = () => {
                                 placeholder="••••••••"
                                 type={!showPassword ? "text" : "password"}
                                 value={password}
+                                autoComplete="new-password"
                                 onChange={(e) => setPassword(e.target.value)} />
                             <button
                                 type="button"
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 hidden"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? (
@@ -307,6 +314,7 @@ const SignUpPage: React.FC = () => {
                                 id="confirm-password"
                                 placeholder="••••••••"
                                 type="password"
+                                autoComplete="new-password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)} />
                         </LabelInputContainer>
@@ -314,7 +322,7 @@ const SignUpPage: React.FC = () => {
                             <Label htmlFor="email">Phone No</Label>
                             <Input
                                 id="phoneno"
-                                placeholder="projectmayhem@fc.com"
+                                placeholder="1234567890"
                                 type="number"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)} />
@@ -323,7 +331,7 @@ const SignUpPage: React.FC = () => {
                             <Label htmlFor="email">Date of birth</Label>
                             <Input
                                 id="dateofbirth"
-                                placeholder="projectmayhem@fc.com"
+                                placeholder=""
                                 type="date"
                                 value={dateOfBirth}
                                 onChange={(e) => setDateOfBirth(e.target.value)} />
@@ -341,16 +349,16 @@ const SignUpPage: React.FC = () => {
 
                         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 
-                        <p className='text-xs flex justify-center gap-3 text-black dark:text-white'>Have an account? <Link to='/login' className="text-blue-400">Log in</Link></p>
+                        <p className='text-xl font-bold flex justify-center gap-3 text-black dark:text-white'>Have an account ? <Link to='/login' className="text-blue-400">Log in</Link></p>
                     </form>
                 </div>
 
                 <AlertDialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Account Created Successfully!</AlertDialogTitle>
+                            <AlertDialogTitle><p className="dark:text-white text-black">Account Created Successfully!</p></AlertDialogTitle>
                             <AlertDialogDescription>
-                                You have successfully created your account. You can now log in.
+                                <p className="dark:text-white text-black">You have successfully created your account. You can now log in.</p>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -359,11 +367,12 @@ const SignUpPage: React.FC = () => {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+                <Loader isLoadingOpen={isSubmitting} />
             </div>
 
 
 
-           
+
 
             {/* </div> */}
         </>

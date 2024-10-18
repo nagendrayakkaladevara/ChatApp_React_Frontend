@@ -14,6 +14,7 @@ import { Spotlight } from '@/components/ui/Spotlight';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from 'lucide-react';
 import { baseURL } from '@/api/axiosClient';
+import Loader from '@/reuablecomponents/Loader';
 
 
 const Login: React.FC = () => {
@@ -21,6 +22,7 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isValid, setIsValid] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const { login } = useContext(AuthContext)!;
 
@@ -38,29 +40,33 @@ const Login: React.FC = () => {
         e.preventDefault();
 
         try {
+            setIsLoading(true);
             const response = await fetch(`${baseURL}auth/login`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Basic ' + btoa(`${phone}:${password}`),  
+                    'Authorization': 'Basic ' + btoa(`${phone}:${password}`),
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ phone, password }),  
+                body: JSON.stringify({ phone, password }),
             });
 
             if (!response.ok) {
-                const data = await response.json().catch(() => null);  
+                const data = await response.json().catch(() => null);
                 setError(data?.msg || 'Login failed. Please try again.');
                 return;
             }
 
             const data = await response.json();
 
-            alert(data.msg);
+            console.log(data.msg);
             login(phone, password);
             console.log('Login successful');
         } catch (err: any) {
             console.error(err);
             setError(err.message || 'An unexpected error occurred. Please try again.');
+        }
+        finally {
+            setIsLoading(false);
         }
     };
 
@@ -80,7 +86,7 @@ const Login: React.FC = () => {
                         </Alert>
                     </div>
                 )}
-                <div className='h-screen flex justify-center items-center'>
+                <div className='h-screen w-full	flex justify-center items-center'>
                     <div>
                         <Card>
                             <CardHeader>
@@ -88,20 +94,21 @@ const Login: React.FC = () => {
                             <CardContent className='flex flex-col gap-3'>
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                     <Input type="number" id="phonenumber" placeholder="Phone No" value={phone}
-                                        onChange={(e) => setPhone(e.target.value)} />
+                                        onChange={(e) => setPhone(e.target.value)} autoComplete="new-password" />
                                 </div>
                                 <div className="grid w-full max-w-sm items-center gap-1.5">
                                     <Input type="password" id="password" placeholder="Password" value={password}
-                                        onChange={(e) => setPassword(e.target.value)} />
+                                        onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
                                 </div>
                                 <Button onClick={handleLogin} disabled={!isValid}>Login</Button>
                             </CardContent>
                             <CardFooter className='flex justify-center'>
-                                <p className='text-xs '>Don't have an account? <Link to='/signup' className="text-blue-400">Sign up</Link></p>
+                                <p className='text-x '>Don't have an account? <Link to='/signup' className="text-blue-400">Sign up</Link></p>
                             </CardFooter>
                         </Card>
                     </div>
                 </div>
+                <Loader isLoadingOpen={isLoading} />
             </div>
         </>
     );

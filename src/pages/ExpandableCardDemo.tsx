@@ -55,7 +55,9 @@ export function ExpandableCardDemo({ friends, loading, messageNotification }: an
     const [active, setActive] = useState<(typeof friends)[number] | null>(null);
     console.log("🚀 ~ ExpandableCardDemo ~ active:", active)
     const [messages, setMessages] = useState<any[]>([]); // Consolidated the messages state
+    console.log("🚀 ~ ExpandableCardDemo ~ messages:", messages)
     const [message, setMessage] = useState('');
+    console.log("🚀 ~ ExpandableCardDemo ~ message:", message)
     const [messageSent, setMessageSent] = useState<string>('');
     const [typingMessage, setTypingMessage] = useState<string>('');
     const [newMessageToggle, setNewMessageToggle] = useState<boolean>(false);
@@ -200,6 +202,20 @@ export function ExpandableCardDemo({ friends, loading, messageNotification }: an
             receiverId: active?._id,
             message: trimmedMessage,
         };
+        console.log("🚀 ~ handleSend ~ trimmedMessage:", trimmedMessage)
+        const newMessage = {
+            _id: new Date().getTime().toString(),
+            sender: active?._id,
+            receiver: '',
+            message: trimmedMessage,
+            isSeen: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            from: 'user'
+        };
+ 
+        setMessages(prevChat => [...prevChat, newMessage])
+        setMessage('');
 
         if (trimmedMessage) {
             socket.emit('sendMessage', { roomId: roomId, message: trimmedMessage });
@@ -208,7 +224,7 @@ export function ExpandableCardDemo({ friends, loading, messageNotification }: an
             try {
 
                 const response = await axiosClient.post('messages/send', payload);
-
+            
                 if (response.status === 201) {
                     setMessage('');
                     setNewMessageToggle((prev: boolean) => !prev);
@@ -512,7 +528,7 @@ export function ExpandableCardDemo({ friends, loading, messageNotification }: an
                 <ul className="max-w-2xl mx-auto w-full gap-4">
                     {loading &&
                         <div className="flex justify-center">
-                            <Loader />
+                            <Loader isLoadingOpen={true} />
                         </div>
                     }
                     {friends.length === 0 && !loading ?
